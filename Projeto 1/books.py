@@ -9,13 +9,14 @@ BOOKS = [
     {'title': 'Title_three', 'author': 'Author_three', 'category': 'history'},
     {'title': 'Title_four', 'author': 'Author_four', 'category': 'math'},
     {'title': 'Title_five', 'author': 'Author_five', 'category': 'math'},
-    {'title': 'Title_six', 'author': 'Author_six', 'category': 'portuguese'}
+    {'title': 'Title_six', 'author': 'Author_two', 'category': 'portuguese'}
 ]
 
 
 @app.get("/books")
 async def read_all_books():  # url:127.0.0.1:8000/
     return BOOKS
+
 
 # FastAPI le em ordem cronologica (de cima para baixo)
 # @app.get("books/mybook")
@@ -27,6 +28,24 @@ async def read_all_books():  # url:127.0.0.1:8000/
 async def read_book(book_title: str):
     for book in BOOKS:
         if book.get('title').casefold() == book_title.casefold():
-            return book     # url: http://127.0.0.1:8000/books/title_one
-            # (caso utilize espaço na lista)url: http://127.0.0.1:8000/books/title%20one ("%20" == espaço)
+            return book     # url: 127.0.0.1:8000/books/title_one
+            # (caso utilize espaço na lista) url: 127.0.0.1:8000/books/title%20one ("%20" == espaço)
 
+
+@app.get("/books/")
+async def read_category_by_query(category: str):
+    books_to_return = []
+    for book in BOOKS:
+        if book.get('category').casefold() == category.casefold():
+            books_to_return.append(book)
+    return books_to_return
+
+
+@app.get("/books/{book_author}")
+async def read_author_category_by_query(book_author: str, category: str):
+    book_to_return = []
+    for book in BOOKS:
+        if book.get('author').casefold() == book_author.casefold() and \
+                book.get('category').casefold() == category.casefold():
+            book_to_return.append(book)
+    return book_to_return
