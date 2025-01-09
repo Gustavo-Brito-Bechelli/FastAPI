@@ -75,3 +75,17 @@ async def delete_book(book_title: str):     # 127.0.0.1:8000books/delete_book/{b
         if BOOKS[i].get('title').casefold() == book_title.casefold():
             BOOKS.pop(i)
             break
+
+
+'''
+Fist activite
+Get all books from a specific author using either Path Parameters or Query Parameters.
+
+@app.get("/books/byauthor/")
+async def read_books_author_by_query(author: str):
+    books_to_return = []
+    for book in BOOKS:
+        if book.get('author').casefold() == author.casefold():
+            books_to_return.append(book)
+    return books_to_return
+'''
