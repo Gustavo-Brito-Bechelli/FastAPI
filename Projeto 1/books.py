@@ -28,11 +28,10 @@ async def read_all_books():
 
 
 @app.get("/books/{book_title}")
-async def read_book(book_title: str):
+async def read_book(book_title: str):   # url: 127.0.0.1:8000/books/title_one ou title%20one ("%20" == espaço)
     for book in BOOKS:
         if book.get('title').casefold() == book_title.casefold():
-            return book     # url: 127.0.0.1:8000/books/title_one
-            # url: 127.0.0.1:8000/books/title%20one ("%20" == espaço)
+            return book
 
 
 # Query Parameters #
@@ -71,7 +70,7 @@ async def update_book(updated_book=Body()):
 
 # DELETE Method
 @app.delete("books/delete_book/{book_title}")
-async def delete_book(book_title: str):
+async def delete_book(book_title: str):     # 127.0.0.1:8000books/delete_book/{book_title}
     for i in range(len(BOOKS)):
         if BOOKS[i].get('title').casefold() == book_title.casefold():
             BOOKS.pop(i)
