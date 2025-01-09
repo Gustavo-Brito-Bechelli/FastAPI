@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
 
 
 app = FastAPI()  # uvicorn books:app --reload
@@ -13,15 +13,18 @@ BOOKS = [
 ]
 
 
+# GET Methods (cannot have a body)
+
+# Path Parameters #
 @app.get("/books")
 async def read_all_books():  # url:127.0.0.1:8000/
     return BOOKS
 
 
 # FastAPI le em ordem cronologica (de cima para baixo)
-# @app.get("books/mybook")
-# async def read_all_books():
-#    return {'book_title': 'My favorite book'}
+@app.get("books/mybook")
+async def read_all_books():
+   return {'book_title': 'My favorite book'}
 
 
 @app.get("/books/{book_title}")
@@ -32,6 +35,7 @@ async def read_book(book_title: str):
             # (caso utilize espaço na lista) url: 127.0.0.1:8000/books/title%20one ("%20" == espaço)
 
 
+# Query Parameters #
 @app.get("/books/")
 async def read_category_by_query(category: str):
     books_to_return = []
@@ -49,3 +53,10 @@ async def read_author_category_by_query(book_author: str, category: str):
                 book.get('category').casefold() == category.casefold():
             book_to_return.append(book)
     return book_to_return
+
+
+# POST Method (can have a body)
+@app.post("/books/create_book")
+async def create_book(new_book=Body()):
+    BOOKS.append(new_book)
+
