@@ -1,5 +1,7 @@
-from fastapi import FastAPI, Body
-from pydantic import BaseModel
+from typing import Optional
+
+from fastapi import FastAPI
+from pydantic import BaseModel, Field
 
 app = FastAPI()     # uvicorn books2:app --reload
 
@@ -20,11 +22,11 @@ class Book:
 
 
 class BookRequest(BaseModel):
-    id: int
-    title: str
-    author: str
-    description: str
-    rating: int
+    id: Optional[int] = None    # tornando o id opcional
+    title: str = Field(min_length=3)
+    author: str = Field(min_length=1)
+    description: str = Field(min_length=1, max_length=100)
+    rating: int = Field(gt=0, lt=6)
 
 
 BOOKS = [
@@ -46,4 +48,19 @@ async def read_all_books():
 async def create_book(book_request: BookRequest):
     new_book = Book(**book_request.dict())  # Book(**book_request.dict()) == converter a requesição para Book objeto
     # Book(**book_request.model_dump()) == caso o ".dict()" esteja dando erro
-    BOOKS.append(new_book)
+    BOOKS.append(find_book_id(new_book))
+
+
+# mudando o ID para o proximo depois do ultimo da lista
+def find_book_id(book: Book):
+
+    # Jeito 1
+    book.id = 1 if len(BOOKS) == 0 else BOOKS[-1].id + 1
+
+    # Jeito 2
+    # if len(BOOKS) > 0:
+    #     book.id = BOOKS[-1].id + 1
+    # else:
+    #     book.id = 1
+
+    return book
